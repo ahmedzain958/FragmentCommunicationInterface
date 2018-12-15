@@ -17,5 +17,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ok" />
-
+    <Button
+        android:id="@+id/button_share_view_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share using view model" />
 </LinearLayout>

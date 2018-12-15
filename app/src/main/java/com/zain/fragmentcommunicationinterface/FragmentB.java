@@ -1,5 +1,7 @@
 package com.zain.fragmentcommunicationinterface;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,7 +16,8 @@ public class FragmentB extends Fragment {
     private FragmentBListener listener;
     private EditText editText;
     private Button buttonOk;
-
+    private Button button_share_view_model;
+    private ShareViewModel shareViewModel;
     public interface FragmentBListener {
         void onInputBSent(CharSequence input);
     }
@@ -26,6 +29,7 @@ public class FragmentB extends Fragment {
 
         editText = v.findViewById(R.id.edit_text);
         buttonOk = v.findViewById(R.id.button_ok);
+        button_share_view_model = v.findViewById(R.id.button_share_view_model);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +37,12 @@ public class FragmentB extends Fragment {
                 listener.onInputBSent(input);
             }
         });
-
+        button_share_view_model.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareViewModel.setText(editText.getText());
+            }
+        });
         return v;
     }
     public void updateEditText(CharSequence newText) {
@@ -63,7 +72,18 @@ public class FragmentB extends Fragment {
                     + " must implement FragmentBListener");
         }
     }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
+        shareViewModel = ViewModelProviders.of(getActivity()).get(ShareViewModel.class);
+        shareViewModel.getText().observe(getViewLifecycleOwner(), new Observer<CharSequence>() {
+            @Override
+            public void onChanged(@Nullable CharSequence charSequence) {
+                editText.setText(charSequence);
+            }
+        });
+    }
     @Override
     public void onDetach() {
         super.onDetach();
